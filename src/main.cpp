@@ -1,6 +1,10 @@
 #include <cstdlib>
+#include <iostream>
+#include "SFML/Graphics/PrimitiveType.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"
+#include "line.hpp"
 #include "physics.hpp"
 
 // assume a < b, generate random number in [a,b)
@@ -11,23 +15,27 @@ int randnum(int a, int b) {
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
 	sf::Clock clock;
 
 	srand((unsigned)time(NULL));
 
-	Body* body1 = new Body(15.f, sf::Color::Red);
-	body1->mass = 1000000.f;
-	body1->pos += vec2(300.f, 400.f);
-	body1->vel += vec2(0.f, -30.f);
-	Body* body2 = new Body(15.f, sf::Color::Green);
-	body2->mass = 1000000.f;
-	body2->pos += vec2(500.f, 400.f);
-	body2->vel += vec2(0.f, 30.f);
+	Particle* part1 = new Particle(15.f, sf::Color::Blue);
+	part1->mass = 5000.f;
+	part1->pos += vec2(500.f, 300.f);
+	part1->vel += vec2(-200.f, 100.f);
+	Particle* part2 = new Particle(8.f, sf::Color::Blue);
+	part2->mass = 1000.f;
+	part2->pos += vec2(200.f, 300.f);
+	part2->vel += vec2(200.f, 100.f);
 
-	Scene scene = Scene();
-	scene.addObject(body1);
-	scene.addObject(body2);
+	Scene scene = Scene(&window);
+	scene.gravitational_pull = false;
+	scene.bounding_box = true;
+	scene.addObject(part1);
+	scene.addObject(part2);
+	
+	bool pause = false;
 
     while (window.isOpen())
     {
@@ -39,10 +47,10 @@ int main()
                 window.close();
 
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				Body* body = new Body(10.f, sf::Color(randnum(100, 255),randnum(100, 255),randnum(100, 255)));
-				body->mass += randnum(100000, 1000000);
+				Particle* body = new Particle(30.f, sf::Color(randnum(100, 255),randnum(100, 255),randnum(100, 255)));
+				body->mass += randnum(100, 800);
 				body->pos += vec2(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-				body->vel += vec2(randnum(-800, 800), randnum(-800, 800));
+				body->vel += vec2(randnum(-200, 200), randnum(-200, 200));
 				scene.addObject(body);
 			}
 
@@ -50,11 +58,22 @@ int main()
 				int i = randnum(0, scene.objectsNumber());
 				Object* obj = scene.getObject(i);
 				scene.removeObject(obj);
+
+				// pause = true;
 			}
         }
 
-		scene.step(clock.restart().asSeconds());
 		scene.render(window);
+		scene.step(clock.restart().asSeconds(), &window);
+
+		if (pause) {
+			// std::cout << scene.getObject(0)->pos << std::endl;
+			char i = std::cin.get();
+			if (i == 'r') pause = false;
+			clock.restart();
+		}
+
+		// std::cout << part1->pos << " - " << part2->pos << " => " << vec2::distance(part1->pos, part2->pos) << " - " << part1->shape.getRadius() + part2->shape.getRadius() << std::endl;
 
         window.display();
     }

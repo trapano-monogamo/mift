@@ -1,0 +1,31 @@
+~ COLLISION DETECTION ~
+
++------------ LEGEND -------------+
+| /     class or struct           |
+| -     property                  |
+| !     flag                      |
+| *     pointer or reference type |
+| <...> collection of type...     |
+| ()    method                    |
++---------------------------------+
+
+/ Object
+	! is_static
+	- velocity
+	- force
+	/ transform
+		- position
+		- rotation
+		- scale
+
+	/ collider
+		! collides
+		- radius
+		- transform*
+
+/ Scene
+	! gravitational_pull
+	- gravitational_constant
+	<Object*> objects
+	<Collider*> colliders
+	() step

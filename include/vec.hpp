@@ -29,6 +29,8 @@ struct vec2 {
 	friend vec2 operator*(const vec2& l, float r);
 	friend vec2 operator/(const vec2& l, float r);
 
+	friend vec2 operator-(const vec2& r);
+
 	void operator+=(const vec2& r);
 	void operator-=(const vec2& r);
 	void operator*=(const vec2& r);

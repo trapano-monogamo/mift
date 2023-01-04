@@ -9,7 +9,9 @@ vec2 vec2::normalize(const vec2& v) {
 }
 
 // vec2 vec2::cross(const vec2& l, const vec2& r) { }
-// float vec2::dot(const vec2& l, const vec2& r) { }
+float vec2::dot(const vec2& l, const vec2& r) {
+	return l.x * r.x + l.y * r.y;
+}
 
 float vec2::distance(const vec2& l, const vec2& r) {
 	return sqrt((l.x - r.x) * (l.x - r.x) + (l.y - r.y) * (l.y - r.y));
@@ -23,6 +25,8 @@ vec2 operator+(const vec2& l, const vec2& r) { return vec2(l.x + r.x, l.y + r.y)
 vec2 operator-(const vec2& l, const vec2& r) { return vec2(l.x - r.x, l.y - r.y); }
 vec2 operator*(const vec2& l, const vec2& r) { return vec2(l.x * r.x, l.y * r.y); }
 vec2 operator/(const vec2& l, const vec2& r) { return vec2(l.x / r.x, l.y / r.y); }
+
+vec2 operator-(const vec2& r) { return vec2(-r.x, -r.y); }
 
 vec2 operator+(const vec2& l, float r) { return vec2(l.x + r, l.y + r); }
 vec2 operator-(const vec2& l, float r) { return vec2(l.x - r, l.y - r); }
