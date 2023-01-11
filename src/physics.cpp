@@ -133,7 +133,7 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 
 			vec2 u = v2 - v1;
 			vec2 A = p2;
-			vec2 B = p2 + u;
+			vec2 B = p2 + u*dt;
 			vec2 k = vec2::normalize(u);
 			float m = (B.y - A.y) / (B.x - A.x);
 			vec2 H = vec2(
@@ -148,10 +148,7 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 			vec2 P2 = lerp(p2, p2+v2*dt, t);
 			vec2 P1 = lerp(p1, p1+v1*dt, t);
 
-			sf::Vertex line[] = {
-				sf::Vector2f(p2.x, p2.y),
-				sf::Vector2f(p2.x + u.x, p2.y + u.y),
-			};
+			sf::Vertex line[] = { sf::Vector2f(p2.x, p2.y), sf::Vector2f(p2.x + u.x, p2.y + u.y) };
 			sf::CircleShape Pc(10.f);
 			Pc.setFillColor(sf::Color::Green);
 			Pc.setPosition(P.x, P.y);
