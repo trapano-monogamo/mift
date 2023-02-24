@@ -83,7 +83,7 @@ void Scene::render(sf::RenderWindow& window) {
 	}
 }
 
-void Scene::step(float dt, sf::RenderWindow* window) {
+void Scene::step(float dt, sf::RenderWindow* window, bool& pause) {
 	for (Object* obj : this->m_objects) {
 
 		Particle* a = dynamic_cast<Particle*>(obj);
@@ -137,8 +137,9 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 			vec2 k = vec2::normalize(u);
 			float m = (B.y - A.y) / (B.x - A.x);
 			vec2 H = vec2(
-					(  (m*A.x + (1.f/m)*p1.x - A.y + p1.y) / (m/(m*m + 1))  ),
-					(  (m*m+1)*(m*A.x + (1.f/m)*p1.x - A.y + p1.y) - m*A.x + A.y  ));
+						(  (m*A.x + (1.f/m)*p1.x - A.y + p1.y) / (m/(m*m + 1))  ),
+						(  (m*m+1)*(m*A.x + (1.f/m)*p1.x - A.y + p1.y) - m*A.x + A.y  )
+					);
 			float AH = vec2::distance(A,H);
 			float C1H = Line::distancePointLine(p1, Line(A, B));
 			float HP = sqrt((r1+r2)*(r1+r2) - C1H);
@@ -148,7 +149,7 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 			vec2 P2 = lerp(p2, p2+v2*dt, t);
 			vec2 P1 = lerp(p1, p1+v1*dt, t);
 
-			sf::Vertex line[] = { sf::Vector2f(p2.x, p2.y), sf::Vector2f(p2.x + u.x, p2.y + u.y) };
+			sf::Vertex line[] = { sf::Vector2f(p2.x, p2.y), sf::Vector2f(p2.x + u.x*dt, p2.y + u.y*dt) };
 			sf::CircleShape Pc(10.f);
 			Pc.setFillColor(sf::Color::Green);
 			Pc.setPosition(P.x, P.y);
@@ -166,6 +167,7 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 
 			if (C1H < r1+r2 && t >= 0.0f && t <= 1.0f) {
 				collision = true;
+				pause = true;
 				std::cout << "P1,P2: " << P1 << " - " << P2 << std::endl;
 				std::cout << "p1,p2: " << p1 << " - " << p2 << std::endl;
 			}
@@ -176,6 +178,7 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 				p2 = P2;
 				v1 = (  v1 - (p1-p2) * vec2::dot(v1-v2,p1-p2)/((p1-p2).magnitude() * (p1-p2).magnitude()) * 2*m2/(m1+m2)  );
 				v2 = (  v2 - (p2-p1) * vec2::dot(v2-v1,p2-p1)/((p2-p1).magnitude() * (p2-p1).magnitude()) * 2*m1/(m1+m2)  );
+			}
 #undef p1
 #undef p2
 #undef v1
@@ -184,7 +187,6 @@ void Scene::step(float dt, sf::RenderWindow* window) {
 #undef m2
 #undef r1
 #undef r2
-			}
 		}
 
 		// if the object is static, no force/velocity should affect it

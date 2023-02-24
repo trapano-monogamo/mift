@@ -40,7 +40,7 @@ public:
 	vec2 bounding_box_dims;
 
 	float gravitational_constant = 1000.f;
-	sf::Color clear_color = sf::Color::Black;
+	sf::Color clear_color = sf::Color::Cyan;
 
 public:
 	Scene(sf::RenderWindow* window);
@@ -51,5 +51,5 @@ public:
 	Object* getObject(int index);
 	int objectsNumber();
 	void render(sf::RenderWindow& window);
-	void step(float dt, sf::RenderWindow* window);
+	void step(float dt, sf::RenderWindow* window, bool& pause);
 };

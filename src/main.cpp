@@ -15,7 +15,7 @@ int randnum(int a, int b) {
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
 	sf::Clock clock;
 
 	srand((unsigned)time(NULL));
@@ -64,7 +64,7 @@ int main()
         }
 
 		scene.render(window);
-		scene.step(clock.restart().asSeconds(), &window);
+		scene.step(clock.restart().asSeconds(), &window, pause);
 
 		if (pause) {
 			// std::cout << scene.getObject(0)->pos << std::endl;
